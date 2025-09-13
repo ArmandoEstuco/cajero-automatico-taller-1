@@ -4,27 +4,32 @@ usuarios = {
     11222345: {"nombre": "alberto", 
                "clave": "123456789", 
                "saldo": 1200000, 
-               "movimientos": []},
+               "movimientos": [],
+               "bloqueado": False},
     # usuario: yuka, cuenta: 111422123, clave: 987654321
     111422123: {"nombre": "yuka", 
                 "clave": "987654321", 
                 "saldo": 2300000, 
-                "movimientos": []},
+                "movimientos": [],
+                "bloqueado": False},
     # usuario: benito, cuenta: 1114233200, clave: 123454321
     1114233200: {"nombre": "benito", 
                  "clave": "123454321", 
                  "saldo": 3200000, 
-                 "movimientos": []},
+                 "movimientos": [],
+                 "bloqueado": False},
     # usuario: lauyen, cuenta: 94316677, clave: 13579
     94316677: {"nombre": "lauyen", 
                "clave": "13579", 
                "saldo": 1500000, 
-               "movimientos": []},
+               "movimientos": [],
+               "bloqueado": False},
     # usuario: luyz, cuenta: 746238621, clave: 272612
     746238621: {"nombre": "luyz", 
                 "clave": "272612", 
                 "saldo": 1800000, 
-                "movimientos": []}
+                "movimientos": [],
+                "bloqueado": False}
 }
 
 # variable para saber que cuenta esta activa
@@ -38,23 +43,47 @@ def inicio_sesion():
 ------------CAJERO AUTOMATICO-----------
 -------BIENVENIDO AL BANCO AGUILA-------
 ----------------------------------------""")
+    # pedimos el numero de la cuenta
     cuenta = int(input("ingresa el numero de la cuenta: "))
-    # si cuenta existe en usuarios
+    
+    # si la cuenta existe en usuarios
     if cuenta in usuarios:
-        # pedir la clave
-        clave = input("clave: ")
-        # si la clave es correcta
-        if clave == usuarios[cuenta]["clave"]:
-            print(f"")
-            # cambiar el valor de cuenta_activa a la cuenta ingresada
-            cuenta_activa = cuenta
-        # si la clave es incorrecta
+        # si la cuenta ya fue bloqueada
+        if usuarios[cuenta]["bloqueado"] == True:
+            print("esta cuenta esta bloqueada durante 24 horas, no puedes iniciar sesion")
+            inicio_sesion()
         else:
-            print("la clave es incorrecta")
+            # variable intentos, se empieza con 3 intentos
+            intentos = 3
+            
+            # mientras tenga intentos y no se haya iniciado sesion
+            while intentos > 0 and cuenta_activa == 0:
+                # pedir la clave
+                clave = input("clave: ")
+                
+                # si la clave es correcta
+                if clave == usuarios[cuenta]["clave"]:
+                    # mostrar mensaje de bienvenida
+                    print(f"bienvenido {usuarios[cuenta]['nombre']}")
+                    # guardar que la cuenta esta activa
+                    cuenta_activa = cuenta
+                else:
+                    # si la clave es incorrecta se resta un intento
+                    intentos = intentos - 1
+                    print(f"clave incorrecta, te quedan {intentos} intentos")
+            
+            # si despues de gastar los 3 intentos no se inicio sesion
+            if cuenta_activa == 0:
+                print("has superado el numero maximo de intentos")
+                print("tu cuenta ha sido bloqueada durante 24 horas")
+                # se marca la cuenta como bloqueada
+                usuarios[cuenta]["bloqueado"] = True
+                inicio_sesion()
+    
     # si la cuenta no existe
     else:
         print("esa cuenta no existe")
-        # volver a pedir la cuenta
+        # vuelve a pedir la cuenta
         inicio_sesion()
 
 # funcion para consultar saldo
