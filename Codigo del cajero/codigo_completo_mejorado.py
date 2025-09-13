@@ -36,8 +36,8 @@ def inicio_sesion():
     global cuenta_activa
     print("""----------------------------------------
 ------------CAJERO AUTOMATICO-----------
+-------BIENVENIDO AL BANCO AGUILA-------
 ----------------------------------------""")
-    print("Bienvenido al banco aguila")
     cuenta = int(input("ingresa el numero de la cuenta: "))
     # si cuenta existe en usuarios
     if cuenta in usuarios:
@@ -45,7 +45,7 @@ def inicio_sesion():
         clave = input("clave: ")
         # si la clave es correcta
         if clave == usuarios[cuenta]["clave"]:
-            print(f"bienvenido {usuarios[cuenta]['nombre']}")
+            print(f"")
             # cambiar el valor de cuenta_activa a la cuenta ingresada
             cuenta_activa = cuenta
         # si la clave es incorrecta
@@ -71,7 +71,12 @@ def retirar():
     saldo = usuarios[cuenta_activa]["saldo"]
     comision = int(monto * 0.015)
     total = monto + comision
-    if monto > 0 and total <= saldo:
+    limite_retirar = 7000000
+    
+    if monto > limite_retirar:
+        print(f"no se puede retirar mas de ${limite_retirar}, por favor ingresa otro valor nuevamente")
+        retirar()
+    elif monto > 0 and total <= saldo:
         nuevo_saldo = saldo - total
         usuarios[cuenta_activa]["saldo"] = nuevo_saldo
         print(f"retiro: ${monto}, comision: ${comision}")
@@ -100,18 +105,31 @@ def depositar():
 
 # funcion para ver historial de movimientos
 def ver_historial():
-    movimientos = usuarios[cuenta_activa]["movimientos"]
-    if len(movimientos) == 0:
-        print("no hay movimientos registrados")
-    else:
+    # obtiene la lista de movimientos del usuario activo
+    movimientos = usuarios[cuenta_activa]["movimientos"]   
+    # si la lista está vacía
+    if len(movimientos) == 0:                             
+        # muestra mensaje de vacío
+        print("no hay movimientos registrados")           
+        # si la lista tiene elementos
+    else:                                                 
         print("- - - historial de movimientos - - -")
-        for m in movimientos:
-            print(m)
+        # inicializa un contador en 0
+        i = 0                                             
+        # mientras i sea menor que la cantidad de elementos
+        while i < len(movimientos):                       
+            # imprime el movimiento en la posición i
+            print(movimientos[i])                         
+            # aumenta el contador en 1 para pasar al siguiente
+            i += 1                                        
+
 
 # funcion para el menu principal
 def menu():
     opcion = 0
+    # mientras la opcion sea diferente a 5
     while opcion != 5:
+        print("\n------ ¿Que podemos hacer hoy por ti? ------")
         print("\n1. consultar saldo")
         print("2. retirar")
         print("3. depositar")
@@ -125,7 +143,7 @@ def menu():
                 menu()
             elif ir_al_menu == "2":
                 print("sesion cerrada")
-                print("gracias por preferirnos")
+                print("-------GRACIAS POR TU CONFIANZA Y PREFERENCIA-------")
                 exit()
         elif opcion == 2:
             retirar()
@@ -134,7 +152,7 @@ def menu():
                 menu()
             elif ir_al_menu == "2":
                 print("sesion cerrada")
-                print("gracias por preferirnos")
+                print("-------GRACIAS POR TU CONFIANZA Y PREFERENCIA-------")
                 exit()
         elif opcion == 3:
             depositar()
@@ -143,7 +161,7 @@ def menu():
                 menu()
             elif ir_al_menu == "2":
                 print("sesion cerrada")
-                print("gracias por preferirnos")
+                print("-------GRACIAS POR TU CONFIANZA Y PREFERENCIA-------")
                 exit()
         elif opcion == 4:
             ver_historial()
@@ -152,7 +170,7 @@ def menu():
                 menu()
             elif ir_al_menu == "2":
                 print("sesion cerrada")
-            print("gracias por tu confianza y preferencia")
+            print("-------GRACIAS POR TU CONFIANZA Y PREFERENCIA-------")
             exit()
         elif opcion == 5:
             cerrar_sesion = input("estas seguro que deseas salir?, [1], \no deseas volver al menu?, [2]\n: ")
@@ -160,7 +178,7 @@ def menu():
                 menu()
             elif cerrar_sesion == "1":
                 print("sesion cerrada")
-                print("gracias por tu confianza y preferencia")
+                print("-------GRACIAS POR TU CONFIANZA Y PREFERENCIA-------")
 
 # programa principal
 inicio_sesion()
